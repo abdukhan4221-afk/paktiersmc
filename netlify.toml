@@ -1,0 +1,101 @@
+# Deploy this project from the repository root using Netlify's Git-based build.
+[build]
+  command = "npm run build"
+  publish = "public"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  node_bundler = "esbuild"
+
+# API routes are rewrites, so browser fetch('/api/...') remains same-origin.
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/health"
+  status = 200
+
+[[redirects]]
+  from = "/api/contact"
+  to = "/.netlify/functions/contact"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/session"
+  to = "/.netlify/functions/admin-session"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/login"
+  to = "/.netlify/functions/admin-login"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/logout"
+  to = "/.netlify/functions/admin-logout"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/notes"
+  to = "/.netlify/functions/admin-notes"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/note"
+  to = "/.netlify/functions/admin-note"
+  status = 200
+
+# Unknown API paths get JSON 404s rather than the SPA document.
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api-not-found"
+  status = 200
+
+# Clean browser URLs served by the single-page frontend.
+[[redirects]]
+  from = "/home"
+  to = "/index.html"
+  status = 200
+[[redirects]]
+  from = "/store"
+  to = "/index.html"
+  status = 200
+[[redirects]]
+  from = "/about"
+  to = "/index.html"
+  status = 200
+[[redirects]]
+  from = "/community"
+  to = "/index.html"
+  status = 200
+[[redirects]]
+  from = "/faq"
+  to = "/index.html"
+  status = 200
+[[redirects]]
+  from = "/contact"
+  to = "/index.html"
+  status = 200
+[[redirects]]
+  from = "/login"
+  to = "/index.html"
+  status = 200
+[[redirects]]
+  from = "/notes"
+  to = "/index.html"
+  status = 200
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+# Frontend security headers; the CSP allows only this site plus Google Fonts.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self' https://fonts.gstatic.com data:; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: blob:; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; upgrade-insecure-requests"
